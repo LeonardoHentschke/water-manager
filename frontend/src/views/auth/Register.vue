@@ -1,14 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from "pinia";
-import { onMounted, reactive } from "vue";
+import { reactive, onMounted } from "vue";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-const { errors } = storeToRefs(useAuthStore());
-const { authenticate } = useAuthStore();
+const authStore = useAuthStore();
+const { errors }: { errors: any } = storeToRefs(authStore);
+const { authenticate } = authStore;
 
 const formData = reactive({
   name: "",
@@ -18,6 +19,15 @@ const formData = reactive({
 });
 
 onMounted(() => (errors.value = {}));
+
+const handleRegister = async () => {
+  try {
+    console.log("formData", formData);
+    await authenticate('register', formData);
+  } catch (err) {
+    console.error("Erro no registro:", err);
+  }
+};
 </script>
 
 <template>
@@ -32,13 +42,14 @@ onMounted(() => (errors.value = {}));
             Crie uma nova conta e comece a explorar todos os nossos recursos.
           </p>
         </div>
-        <div class="grid gap-4">
+        <form @submit.prevent="handleRegister" class="grid gap-4">
           <div class="grid gap-2">
             <div class="flex items-center">
               <Label class="text-primary" for="name">Nome</Label>
             </div>
             <Input
               id="name"
+              v-model="formData.name"
               placeholder="Seu nome"
               required
             />
@@ -51,6 +62,7 @@ onMounted(() => (errors.value = {}));
             <Input
               id="email"
               type="email"
+              v-model="formData.email"
               placeholder="wolf@example.com"
               required
             />
@@ -63,6 +75,7 @@ onMounted(() => (errors.value = {}));
             <Input 
               id="password"
               type="password"
+              v-model="formData.password"
               placeholder="******"
               required
             />
@@ -75,10 +88,11 @@ onMounted(() => (errors.value = {}));
             <Input 
               id="password_confirmation"
               type="password"
+              v-model="formData.password_confirmation"
               placeholder="******"
               required
             />
-            <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password[0] }}</p>
+            <p v-if="errors.password_confirmation" class="text-red-500 text-xs">{{ errors.password_confirmation[0] }}</p>
           </div>
           <Button type="submit" class="w-full">
             Cadastrar
@@ -86,9 +100,9 @@ onMounted(() => (errors.value = {}));
           <Button variant="outline" class="w-full" disabled>
             Entrar com Google
           </Button>
-        </div>
+        </form>
         <div class="mt-4 text-center text-sm">
-          Já uma conta?
+          Já tem uma conta?
           <a href="/login" class="underline">
             Entrar
           </a>
@@ -102,7 +116,7 @@ onMounted(() => (errors.value = {}));
         width="1920"
         height="1080"
         class="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-      >
+      />
     </div>
   </div>
 </template>

@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 import Home from "@/views/Home.vue";
 import Login from "@/views/auth/Login.vue";
 import Register from "@/views/auth/Register.vue";
-// import CreateView from "@/views/Posts/CreateView.vue";
-// import ShowView from "@/views/Posts/ShowView.vue";
-// import UpdateView from "@/views/Posts/UpdateView.vue";
-import { useAuthStore } from "@/stores/auth";
+import Dashboard from "@/views/Dashboard.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,12 +26,12 @@ const router = createRouter({
       component: Login,
       meta: { guest: true },
     },
-    // {
-    //   path: "/create",
-    //   name: "create",
-    //   component: CreateView,
-    //   meta: { auth: true },
-    // },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: Dashboard,
+      meta: { auth: true },
+    },
     // {
     //   path: "/posts/:id",
     //   name: "show",

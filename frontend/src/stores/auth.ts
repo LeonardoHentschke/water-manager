@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
     /******************* Login or Register user *******************/
-    async authenticate(apiRoute: any, formData: any) {
+    async authenticate(apiRoute: string, formData: any) {
       const res = await fetch(`/api/${apiRoute}`, {
         method: "post",
         body: JSON.stringify(formData),
