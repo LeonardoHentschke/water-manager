@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { Waves } from 'lucide-vue-next'
 </script>
 
 <template>
   <div class="min-h-screen bg-background">
     <header class="border-b">
       <div class="container flex h-16 items-center">
+        <Waves class="size-5 fill-foreground" />
         <h1 class="text-2xl font-bold">Water Manager</h1>
         <nav class="ml-auto flex gap-4">
           <RouterLink to="/login">

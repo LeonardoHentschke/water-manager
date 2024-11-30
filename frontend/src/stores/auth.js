@@ -23,8 +23,8 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
     /******************* Login or Register user *******************/
-    async authenticate(apiRoute: string, formData: any) {
-      const res = await fetch(`/api/${apiRoute}`, {
+    async authenticate(endpoint, formData) {
+      const res = await fetch(`/api/${endpoint}`, {
         method: "post",
         body: JSON.stringify(formData),
       });
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore("authStore", {
         this.errors = {};
         localStorage.setItem("token", data.token);
         this.user = data.user;
-        this.router.push({ name: "home" });
+        this.router.push({ name: "dashboard" });
       }
     },
     /******************* Logout user *******************/

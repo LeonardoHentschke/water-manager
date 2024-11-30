@@ -30,7 +30,6 @@ const router = createRouter({
       path: "/dashboard",
       name: "dashboard",
       component: Dashboard,
-      meta: { auth: true },
     },
     // {
     //   path: "/posts/:id",

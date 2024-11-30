@@ -1,14 +1,27 @@
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
-
-import { Button } from '@/components/ui/button'
+import { Bird, Rabbit, Settings, LogOut, Share, SquareTerminal, SquareUser, Waves, Turtle } from 'lucide-vue-next'
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbit, Settings, Settings2, Share, SquareTerminal, SquareUser, Waves, Turtle } from 'lucide-vue-next'
+
+import { useAuthStore } from "@/stores/auth";
+import { useWaterManagerStore } from "@/stores/watermanger";
+import { onMounted } from 'vue'
+
+const authStore = useAuthStore();
+const watermanger = useWaterManagerStore();
+
+const projectIds = await watermanger.getProductId();
+
+
+onMounted(() => {
+  console.log(projectIds)
+})
 </script>
 
 <template>
@@ -56,6 +69,24 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="mt-auto rounded-lg"
+                aria-label="Log Out"
+                @click="authStore.logout"
+              >
+                <LogOut class="size-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right" :side-offset="5">
+              Sair
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </nav>
     </aside>
     <div class="flex flex-col">
@@ -67,17 +98,45 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
           <DrawerTrigger as-child>
             <Button variant="ghost" size="icon" class="md:hidden">
               <Settings class="size-4" />
-              <span class="sr-only">Settings</span>
+              <span class="sr-only">Configurações</span>
             </Button>
           </DrawerTrigger>
           <DrawerContent class="max-h-[80vh]">
             <DrawerHeader>
-              <DrawerTitle>Configuration</DrawerTitle>
+              <DrawerTitle>Novo post</DrawerTitle>
               <DrawerDescription>
-                Configure the settings for the model and messages.
+                Defina as configurações do modelo do post
               </DrawerDescription>
             </DrawerHeader>
             <form class="grid w-full items-start gap-6 overflow-auto p-4 pt-0">
+              <fieldset class="grid gap-6 rounded-lg border p-4">
+                <legend class="-ml-1 px-1 text-sm font-medium">
+                  Messages
+                </legend>
+                <div class="grid gap-3">
+                  <Label for="role">Role</Label>
+                  <Select default-value="system">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="system">
+                        System
+                      </SelectItem>
+                      <SelectItem value="user">
+                        User
+                      </SelectItem>
+                      <SelectItem value="assistant">
+                        Assistant
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div class="grid gap-3">
+                  <Label for="content">Content</Label>
+                  <Textarea id="content" placeholder="You are a..." />
+                </div>
+              </fieldset>
               <fieldset class="grid gap-6 rounded-lg border p-4">
                 <legend class="-ml-1 px-1 text-sm font-medium">
                   Settings
@@ -157,34 +216,6 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
                   <Input id="top-k" type="number" placeholder="0.0" />
                 </div>
               </fieldset>
-              <fieldset class="grid gap-6 rounded-lg border p-4">
-                <legend class="-ml-1 px-1 text-sm font-medium">
-                  Messages
-                </legend>
-                <div class="grid gap-3">
-                  <Label for="role">Role</Label>
-                  <Select default-value="system">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="system">
-                        System
-                      </SelectItem>
-                      <SelectItem value="user">
-                        User
-                      </SelectItem>
-                      <SelectItem value="assistant">
-                        Assistant
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div class="grid gap-3">
-                  <Label for="content">Content</Label>
-                  <Textarea id="content" placeholder="You are a..." />
-                </div>
-              </fieldset>
             </form>
           </DrawerContent>
         </Drawer>
@@ -202,11 +233,21 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
         <div class="relative hidden flex-col items-start gap-8 md:flex">
           <form class="grid w-full items-start gap-6">
             <fieldset class="grid gap-6 rounded-lg border p-4">
+              <div class="grid gap-3">
+                <Label for="title">Titulo</Label>
+                <Input id="title"/>
+              </div>
+              <div class="grid gap-3">
+                <Label for="description">Descrição</Label>
+                <Textarea id="description" class="min-h-[9.5rem]" />
+              </div>
+            </fieldset>
+            <fieldset class="grid gap-6 rounded-lg border p-4">
               <legend class="-ml-1 px-1 text-sm font-medium">
-                Settings
+                Informações
               </legend>
               <div class="grid gap-3">
-                <Label for="model">Model</Label>
+                <Label for="model">Project ID</Label>
                 <Select>
                   <SelectTrigger
                     id="model"
@@ -217,7 +258,6 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
                   <SelectContent>
                     <SelectItem value="genesis">
                       <div class="flex items-start gap-3 text-muted-foreground">
-                        <Rabbit class="size-5" />
                         <div class="grid gap-0.5">
                           <p>
                             Neural
@@ -231,86 +271,20 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
                         </div>
                       </div>
                     </SelectItem>
-                    <SelectItem value="explorer">
-                      <div class="flex items-start gap-3 text-muted-foreground">
-                        <Bird class="size-5" />
-                        <div class="grid gap-0.5">
-                          <p>
-                            Neural
-                            <span class="font-medium text-foreground">
-                              Explorer
-                            </span>
-                          </p>
-                          <p class="text-xs" data-description>
-                            Performance and speed for efficiency.
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="quantum">
-                      <div class="flex items-start gap-3 text-muted-foreground">
-                        <Turtle class="size-5" />
-                        <div class="grid gap-0.5">
-                          <p>
-                            Neural
-                            <span class="font-medium text-foreground">
-                              Quantum
-                            </span>
-                          </p>
-                          <p class="text-xs" data-description>
-                            The most powerful model for complex computations.
-                          </p>
-                        </div>
-                      </div>
-                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div class="grid gap-3">
-                <Label for="temperature">Temperature</Label>
-                <Input id="temperature" type="number" placeholder="0.4" />
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="grid gap-3">
-                  <Label for="top-p">Top P</Label>
-                  <Input id="top-p" type="number" placeholder="0.7" />
-                </div>
-                <div class="grid gap-3">
-                  <Label for="top-k">Top K</Label>
-                  <Input id="top-k" type="number" placeholder="0.0" />
-                </div>
-              </div>
-            </fieldset>
-            <fieldset class="grid gap-6 rounded-lg border p-4">
-              <legend class="-ml-1 px-1 text-sm font-medium">
-                Messages
-              </legend>
-              <div class="grid gap-3">
-                <Label for="role">Role</Label>
-                <Select default-value="system">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="system">
-                      System
-                    </SelectItem>
-                    <SelectItem value="user">
-                      User
-                    </SelectItem>
-                    <SelectItem value="assistant">
-                      Assistant
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label for="value">Valor</Label>
+                <Input id="value"/>
               </div>
               <div class="grid gap-3">
-                <Label for="content">Content</Label>
-                <Textarea
-                  id="content"
-                  placeholder="You are a..."
-                  class="min-h-[9.5rem]"
-                />
+                <Label for="latitude">Latitude</Label>
+                <Input id="latitude"/>
+              </div>
+              <div class="grid gap-3">
+                <Label for="longitude">Latitude</Label>
+                <Input id="longitude"/>
               </div>
             </fieldset>
           </form>
@@ -320,48 +294,6 @@ import { Bird, Book, Bot, Code2, CornerDownLeft, LifeBuoy, Mic, Paperclip, Rabbi
             Output
           </Badge>
           <div class="flex-1" />
-          <form class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring">
-            <Label for="message" class="sr-only">
-              Message
-            </Label>
-            <Textarea
-              id="message"
-              placeholder="Type your message here..."
-              class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-            />
-            <div class="flex items-center p-3 pt-0">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger as-child>
-                    <Button variant="ghost" size="icon">
-                      <Paperclip class="size-4" />
-                      <span class="sr-only">Attach file</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    Attach File
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger as-child>
-                    <Button variant="ghost" size="icon">
-                      <Mic class="size-4" />
-                      <span class="sr-only">Use Microphone</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    Use Microphone
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <Button type="submit" size="sm" class="ml-auto gap-1.5">
-                Send Message
-                <CornerDownLeft class="size-3.5" />
-              </Button>
-            </div>
-          </form>
         </div>
       </main>
     </div>
