@@ -1,7 +1,10 @@
-<script setup lang="ts">
-import { SelectItemText, type SelectItemTextProps } from 'radix-vue'
+<script setup>
+import { SelectItemText } from 'radix-vue';
 
-const props = defineProps<SelectItemTextProps>()
+const props = defineProps({
+  asChild: { type: Boolean, required: false },
+  as: { type: null, required: false },
+});
 </script>
 
 <template>

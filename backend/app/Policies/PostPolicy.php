@@ -12,6 +12,6 @@ class PostPolicy
     {
         return $user->id === $post->user_id
             ? Response::allow()
-            : Response::deny('Você não é o proprietário desta postagem');
+            : Response::deny('You do not own this post');
     }
 }

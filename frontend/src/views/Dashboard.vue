@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { Bird, Rabbit, Settings, LogOut, Share, SquareTerminal, SquareUser, Waves, Turtle } from 'lucide-vue-next'
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -14,14 +14,14 @@ import { useWaterManagerStore } from "@/stores/watermanger";
 import { onMounted } from 'vue'
 
 const authStore = useAuthStore();
-const watermanger = useWaterManagerStore();
+// const watermanger = useWaterManagerStore();
 
-const projectIds = await watermanger.getProductId();
+// const projectIds = await watermanger.getProductId();
 
 
-onMounted(() => {
-  console.log(projectIds)
-})
+// onMounted(() => {
+//   console.log(projectIds)
+// })
 </script>
 
 <template>
@@ -291,7 +291,7 @@ onMounted(() => {
         </div>
         <div class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
           <Badge variant="outline" class="absolute right-3 top-3">
-            Output
+            Mapa
           </Badge>
           <div class="flex-1" />
         </div>

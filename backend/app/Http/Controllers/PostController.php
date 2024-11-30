@@ -23,6 +23,7 @@ class PostController extends Controller implements HasMiddleware
     public function index()
     {
         return Post::with('user')->latest()->get();
+        // return Post::all();
     }
 
     /**
@@ -32,17 +33,13 @@ class PostController extends Controller implements HasMiddleware
     {
         $fields = $request->validate([
             'title' => 'required|max:255',
-            'description' => 'required',
-            'value' => 'required|max:255',
-            'vendor_id' => 'required|max:255',
-            'product_id' => 'required|max:255',
-            'latitude' => 'required|max:255',
-            'longitude' => 'required|max:255',
+            'body' => 'required'
         ]);
 
         $post = $request->user()->posts()->create($fields);
 
         return ['post' => $post, 'user' => $post->user];
+        // return $post;
     }
 
     /**
@@ -51,6 +48,7 @@ class PostController extends Controller implements HasMiddleware
     public function show(Post $post)
     {
         return ['post' => $post, 'user' => $post->user];
+        // return $post;
     }
 
     /**
@@ -62,17 +60,13 @@ class PostController extends Controller implements HasMiddleware
 
         $fields = $request->validate([
             'title' => 'required|max:255',
-            'description' => 'required',
-            'value' => 'required|max:255',
-            'vendor_id' => 'required|max:255',
-            'product_id' => 'required|max:255',
-            'latitude' => 'required|max:255',
-            'longitude' => 'required|max:255',
+            'body' => 'required'
         ]);
 
         $post->update($fields);
 
         return ['post' => $post, 'user' => $post->user];
+        // return $post;
     }
 
     /**
@@ -84,6 +78,6 @@ class PostController extends Controller implements HasMiddleware
 
         $post->delete();
 
-        return ['message' => 'A postagem foi excluída'];
+        return ['message' => 'The post was deleted'];
     }
 }
