@@ -17,14 +17,6 @@ const formData = reactive({
 });
 
 onMounted(() => (errors.value = {}));
-
-const handleSubmit = async () => {
-  try {
-    await authenticate('login', formData);
-  } catch (err) {
-    console.error("Erro no login:", err);
-  }
-};
 </script>
 
 <template>
@@ -39,7 +31,7 @@ const handleSubmit = async () => {
             Digite seu e-mail para fazer login em sua conta
           </p>
         </div>
-        <form @submit.prevent="handleSubmit" class="grid gap-4">
+        <form @submit.prevent="authenticate('login', formData)" class="grid gap-4">
           <div class="grid gap-2">
             <div class="flex items-center">
               <Label class="text-primary" for="email">Email</Label>

@@ -1,5 +1,5 @@
 <script setup>
-import { Bird, Rabbit, Settings, LogOut, Share, SquareTerminal, SquareUser, Waves, Turtle } from 'lucide-vue-next'
+import { Settings, LogOut, Share, SquareTerminal, SquareUser, Waves } from 'lucide-vue-next'
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -8,20 +8,26 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import LeafletMap from '@/components/leaflet/LeafletMap.vue'
+import DateRangePicker from '@/components/app/DateRangePicker.vue'
 
 import { useAuthStore } from "@/stores/auth";
-import { useWaterManagerStore } from "@/stores/watermanger";
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import { fallbackProductsIds } from '@/utils/fallbackProductsIds'
 
 const authStore = useAuthStore();
-// const watermanger = useWaterManagerStore();
+const projectIds = ref([]);
 
-// const projectIds = await watermanger.getProductId();
-
-
-// onMounted(() => {
-//   console.log(projectIds)
-// })
+onMounted(async () => {
+  try {
+    // const response = await fetch('/api/proxy');
+    // projectIds.value = response.data;
+    projectIds.value = fallbackProductsIds;
+  } catch (error) {
+    console.error("Erro ao montar a página:", error);
+    projectIds.value = fallbackProductsIds;
+  }
+});
 </script>
 
 <template>
@@ -103,99 +109,52 @@ const authStore = useAuthStore();
           </DrawerTrigger>
           <DrawerContent class="max-h-[80vh]">
             <DrawerHeader>
-              <DrawerTitle>Novo post</DrawerTitle>
+              <DrawerTitle>Nova informação</DrawerTitle>
               <DrawerDescription>
                 Defina as configurações do modelo do post
               </DrawerDescription>
             </DrawerHeader>
             <form class="grid w-full items-start gap-6 overflow-auto p-4 pt-0">
               <fieldset class="grid gap-6 rounded-lg border p-4">
-                <legend class="-ml-1 px-1 text-sm font-medium">
-                  Messages
-                </legend>
                 <div class="grid gap-3">
-                  <Label for="role">Role</Label>
-                  <Select default-value="system">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="system">
-                        System
-                      </SelectItem>
-                      <SelectItem value="user">
-                        User
-                      </SelectItem>
-                      <SelectItem value="assistant">
-                        Assistant
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                <Label for="title">Titulo</Label>
+                <Input id="title"/>
                 </div>
                 <div class="grid gap-3">
-                  <Label for="content">Content</Label>
-                  <Textarea id="content" placeholder="You are a..." />
+                  <Label for="description">Descrição</Label>
+                  <Textarea id="description" />
                 </div>
               </fieldset>
               <fieldset class="grid gap-6 rounded-lg border p-4">
                 <legend class="-ml-1 px-1 text-sm font-medium">
-                  Settings
+                  Informações
                 </legend>
                 <div class="grid gap-3">
-                  <Label for="model">Model</Label>
+                  <Label for="model">Project ID</Label>
                   <Select>
                     <SelectTrigger
                       id="model"
                       class="items-start [&_[data-description]]:hidden"
+                      :disabled="projectIds.length === 0"
                     >
-                      <SelectValue placeholder="Select a model" />
+                      <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="genesis">
+                      <SelectItem
+                        v-for="project in projectIds"
+                        :key="project.id"
+                        :value="project.productid"
+                      >
                         <div class="flex items-start gap-3 text-muted-foreground">
-                          <Rabbit class="size-5" />
                           <div class="grid gap-0.5">
                             <p>
-                              Neural
+                              {{ project.id }}
                               <span class="font-medium text-foreground">
-                                Genesis
+                                {{ project.description }}
                               </span>
                             </p>
                             <p class="text-xs" data-description>
-                              Our fastest model for general use cases.
-                            </p>
-                          </div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="explorer">
-                        <div class="flex items-start gap-3 text-muted-foreground">
-                          <Bird class="size-5" />
-                          <div class="grid gap-0.5">
-                            <p>
-                              Neural
-                              <span class="font-medium text-foreground">
-                                Explorer
-                              </span>
-                            </p>
-                            <p class="text-xs" data-description>
-                              Performance and speed for efficiency.
-                            </p>
-                          </div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="quantum">
-                        <div class="flex items-start gap-3 text-muted-foreground">
-                          <Turtle class="size-5" />
-                          <div class="grid gap-0.5">
-                            <p>
-                              Neural
-                              <span class="font-medium text-foreground">
-                                Quantum
-                              </span>
-                            </p>
-                            <p class="text-xs" data-description>
-                              The most powerful model for complex
-                              computations.
+                              {{ project.productid }}
                             </p>
                           </div>
                         </div>
@@ -204,18 +163,21 @@ const authStore = useAuthStore();
                   </Select>
                 </div>
                 <div class="grid gap-3">
-                  <Label for="temperature">Temperature</Label>
-                  <Input id="temperature" type="number" placeholder="0.4" />
+                  <Label for="value">Valor</Label>
+                  <Input id="value"/>
                 </div>
                 <div class="grid gap-3">
-                  <Label for="top-p">Top P</Label>
-                  <Input id="top-p" type="number" placeholder="0.7" />
+                  <Label for="latitude">Latitude</Label>
+                  <Input id="latitude"/>
                 </div>
                 <div class="grid gap-3">
-                  <Label for="top-k">Top K</Label>
-                  <Input id="top-k" type="number" placeholder="0.0" />
+                  <Label for="longitude">Latitude</Label>
+                  <Input id="longitude"/>
                 </div>
               </fieldset>
+              <Button>
+                Salvar
+              </Button>
             </form>
           </DrawerContent>
         </Drawer>
@@ -233,12 +195,15 @@ const authStore = useAuthStore();
         <div class="relative hidden flex-col items-start gap-8 md:flex">
           <form class="grid w-full items-start gap-6">
             <fieldset class="grid gap-6 rounded-lg border p-4">
+              <legend class="-ml-1 px-1 text-sm font-medium">
+                Nova informação
+              </legend>
               <div class="grid gap-3">
-                <Label for="title">Titulo</Label>
+                <Label for="title" class="text-left">Titulo</Label>
                 <Input id="title"/>
               </div>
               <div class="grid gap-3">
-                <Label for="description">Descrição</Label>
+                <Label for="description" class="text-left">Descrição</Label>
                 <Textarea id="description" class="min-h-[9.5rem]" />
               </div>
             </fieldset>
@@ -247,26 +212,31 @@ const authStore = useAuthStore();
                 Informações
               </legend>
               <div class="grid gap-3">
-                <Label for="model">Project ID</Label>
+                <Label for="model" class="text-left">Project ID</Label>
                 <Select>
                   <SelectTrigger
                     id="model"
                     class="items-start [&_[data-description]]:hidden"
+                    :disabled="projectIds.length === 0"
                   >
-                    <SelectValue placeholder="Select a model" />
+                    <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="genesis">
+                    <SelectItem
+                      v-for="project in projectIds"
+                      :key="project.id"
+                      :value="project.productid"
+                    >
                       <div class="flex items-start gap-3 text-muted-foreground">
                         <div class="grid gap-0.5">
                           <p>
-                            Neural
+                            {{ project.id }}
                             <span class="font-medium text-foreground">
-                              Genesis
+                              {{ project.description }}
                             </span>
                           </p>
                           <p class="text-xs" data-description>
-                            Our fastest model for general use cases.
+                            {{ project.productid }}
                           </p>
                         </div>
                       </div>
@@ -275,25 +245,33 @@ const authStore = useAuthStore();
                 </Select>
               </div>
               <div class="grid gap-3">
-                <Label for="value">Valor</Label>
+                <Label for="value" class="text-left">Valor</Label>
                 <Input id="value"/>
               </div>
               <div class="grid gap-3">
-                <Label for="latitude">Latitude</Label>
+                <Label for="latitude" class="text-left">Latitude</Label>
                 <Input id="latitude"/>
               </div>
               <div class="grid gap-3">
-                <Label for="longitude">Latitude</Label>
+                <Label for="longitude" class="text-left">Longitude</Label>
                 <Input id="longitude"/>
               </div>
             </fieldset>
+            <Button>
+              Salvar
+            </Button>
           </form>
         </div>
         <div class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
+          <DateRangePicker />
+
           <Badge variant="outline" class="absolute right-3 top-3">
             Mapa
           </Badge>
-          <div class="flex-1" />
+
+          <div>
+            <LeafletMap />
+          </div>
         </div>
       </main>
     </div>
