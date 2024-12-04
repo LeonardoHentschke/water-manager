@@ -28,8 +28,8 @@ import { createMonth, toDate } from 'radix-vue/date'
 import { ref, watch } from 'vue'
 
 const value = ref({
-  start: new CalendarDate(2022, 1, 20),
-  end: new CalendarDate(2022, 1, 20).add({ days: 20 }),
+  start: new CalendarDate(2024, 1, 20),
+  end: new CalendarDate(2024, 1, 20).add({ days: 20 }),
 })
 
 const locale = ref('en-US')
@@ -129,7 +129,7 @@ watch(secondMonthPlaceholder, (_secondMonthPlaceholder) => {
           </template>
         </template>
         <template v-else>
-          Pick a date
+          Escolher uma data
         </template>
       </Button>
     </PopoverTrigger>
