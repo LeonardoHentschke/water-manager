@@ -263,13 +263,15 @@ onMounted(async () => {
           </form>
         </div>
         <div class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-          <div class="flex items-center justify-between mb-2">
-            <DateRangePicker class="z-10" />
-            <Badge variant="outline" class="absolute right-3 top-3">
+          <div class="flex items-center justify-between mb-2 relative">
+            <DateRangePicker class="z-10 relative" />
+            <Badge variant="outline" class="absolute right-3 top-3 z-20">
               Mapa
             </Badge>
           </div>
-          <LeafletMap class="z-0"/>
+          <div id="map-container" class="relative z-0">
+            <LeafletMap />
+          </div>
         </div>
       </main>
     </div>

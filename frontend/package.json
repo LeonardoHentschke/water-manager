@@ -13,7 +13,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
-    "leaflet.markercluster": "^1.5.3",
+    "leaflet.heat": "^0.2.0",
     "lucide-vue-next": "^0.462.0",
     "pinia": "^2.2.8",
     "radix-vue": "^1.9.10",
