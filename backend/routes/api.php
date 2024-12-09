@@ -16,4 +16,5 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/proxy', [ProxyWaterManagerController::class, 'fetchProductIds']);
+Route::get('/proxy/products', [ProxyWaterManagerController::class, 'fetchProductIds']);
+Route::get('/proxy/search', [ProxyWaterManagerController::class, 'searchData']);

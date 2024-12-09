@@ -12,10 +12,12 @@ import LeafletMap from '@/components/leaflet/LeafletMap.vue'
 import DateRangePicker from '@/components/app/DateRangePicker.vue'
 
 import { useAuthStore } from "@/stores/auth";
+import { usePostsStore } from "@/stores/posts";
 import { onMounted, ref } from 'vue'
 import { fallbackProductsIds } from '@/utils/fallbackProductsIds'
 
 const authStore = useAuthStore();
+const postsStore = usePostsStore();
 const projectIds = ref([]);
 
 onMounted(async () => {
@@ -23,6 +25,7 @@ onMounted(async () => {
     // const response = await fetch('/api/proxy');
     // projectIds.value = response.data;
     projectIds.value = fallbackProductsIds;
+    console.log(postsStore.proxy('/proxy/search', 'GET'));
   } catch (error) {
     console.error("Erro ao montar a página:", error);
     projectIds.value = fallbackProductsIds;
