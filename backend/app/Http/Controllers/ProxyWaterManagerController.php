@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class ProxyWaterManagerController extends Controller
-{
-    public function fetchProductIds()
-    {
+class ProxyWaterManagerController extends Controller {
+
+    public function fetchProductIds() {
         try {
             $url = 'http://177.44.248.13:8080/WaterManager/productID.jsp?FORMAT=JSON';
             $response = Http::get($url);
@@ -27,9 +26,7 @@ class ProxyWaterManagerController extends Controller
         }
     }
 
-    //http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI=2024-10-01%2000:00:00&DATAFIN=2024-10-02%2024:00:00&FORMAT=JSON
-    public function searchData(Request $request)
-    {
+    public function searchData(Request $request) {
         try {
 
             $url = 'http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI=2024-10-01%2000:00:00&DATAFIN=2024-10-02%2024:00:00&FORMAT=JSON';

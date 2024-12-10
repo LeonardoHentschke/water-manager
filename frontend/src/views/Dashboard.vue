@@ -19,18 +19,26 @@ import { fallbackProductsIds } from '@/utils/fallbackProductsIds'
 const authStore = useAuthStore();
 const postsStore = usePostsStore();
 const projectIds = ref([]);
+const mapData = ref([]);
+
+const fetchData = async () => {
+  try {
+    const data = await postsStore.searchData();
+    mapData.value = data;
+  } catch (error) {
+    console.error("Erro ao buscar os dados:", error);
+  }
+};
 
 onMounted(async () => {
   try {
-    // const response = await fetch('/api/proxy');
-    // projectIds.value = response.data;
+    fetchData();
     projectIds.value = fallbackProductsIds;
-    console.log(postsStore.proxy('/proxy/search', 'GET'));
   } catch (error) {
     console.error("Erro ao montar a página:", error);
-    projectIds.value = fallbackProductsIds;
   }
 });
+
 </script>
 
 <template>
@@ -273,7 +281,7 @@ onMounted(async () => {
             </Badge>
           </div>
           <div id="map-container" class="relative z-0">
-            <LeafletMap />
+            <LeafletMap :markers="mapData"/>
           </div>
         </div>
       </main>

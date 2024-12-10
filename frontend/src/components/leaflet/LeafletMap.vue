@@ -1,16 +1,17 @@
 <script setup>
 import { Button } from '@/components/ui/button'
-
-import "leaflet/dist/leaflet.css";
-import leaflet from "leaflet";
-import "leaflet.heat";
-import { onMounted, watchEffect, ref } from "vue";
+import { onMounted, watchEffect, ref, watch } from "vue";
 import { useGeolocation } from "@vueuse/core";
 import { userMarker, nearbyMarkers } from "@/stores/map";
+import leaflet from "leaflet";
+
+import "leaflet/dist/leaflet.css";
+import "leaflet.heat";
 
 const { coords } = useGeolocation();
 
 let map;
+let markerLayerGroup;
 let userGeoMarker;
 let markersLayer = [];
 let heatmapLayer;
@@ -23,7 +24,6 @@ const createMarker = (lat, lng, popupText) => {
     .addTo(map)
     .bindPopup(popupText);
 
-  // Adiciona um evento de clique no marcador para removê-lo
   marker.on("click", () => {
     map.removeLayer(marker);
     nearbyMarkers.value = nearbyMarkers.value.filter(
@@ -31,7 +31,7 @@ const createMarker = (lat, lng, popupText) => {
     );
   });
 
-  markersLayer.push(marker); // Armazena o marcador no array
+  markersLayer.push(marker);
 };
 
 const toggleHeatMap = () => {
@@ -59,6 +59,26 @@ const toggleHeatMap = () => {
   }
 };
 
+const createMarkers = (data) => {
+  if (markerLayerGroup) {
+    markerLayerGroup.clearLayers();
+  }
+  markerLayerGroup = leaflet.layerGroup().addTo(map);
+  data.forEach(({ latitude, longitude, value }) => {
+    leaflet
+      .marker([parseFloat(latitude), parseFloat(longitude)])
+      .addTo(markerLayerGroup)
+      .bindPopup(`Valor: ${value}`);
+  });
+};
+
+const props = defineProps({
+  markers: {
+    type: Array,
+    default: () => [],
+  },
+});
+
 onMounted(() => {
   map = leaflet
     .map("map")
@@ -80,6 +100,8 @@ onMounted(() => {
     createMarker(latitude, longitude, `Saved Marker at (<strong>${latitude.toFixed(2)},${longitude.toFixed(2)})</strong>`);
     nearbyMarkers.value.push({ latitude, longitude });
   });
+
+  createMarkers(props.markers);
 });
 
 watchEffect(() => {
@@ -93,7 +115,7 @@ watchEffect(() => {
     userGeoMarker = leaflet
       .marker([latitude, longitude])
       .addTo(map)
-      .bindPopup("Marcado pelo sistema");
+      .bindPopup("Sua localização pelo navegador!");
 
     map.setView([latitude, longitude], 13);
 
@@ -101,6 +123,16 @@ watchEffect(() => {
     if (el) el.style.filter = "hue-rotate(120deg)";
   }
 });
+
+watch(
+  () => props.markers,
+  (newMarkers) => {
+    if (newMarkers && map) {
+      createMarkers(newMarkers);
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

@@ -81,14 +81,15 @@ export const usePostsStore = defineStore("postsStore", {
       }
     },
     /******************* Proxy *******************/
-    async proxy(url, method, body) {
-      const res = await fetch(url, {
-        method: method,
+    async searchData() {
+      const res = await fetch('/api/proxy/search', {
+        method: 'get',
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(body),
       });
+
+      console.log(res);
 
       const data = await res.json();
       return data;
