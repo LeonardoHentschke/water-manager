@@ -56,7 +56,6 @@ export const usePostsStore = defineStore("postsStore", {
         if (res.ok) {
           this.router.push({ name: "home" });
         }
-        console.log(data);
       }
     },
     /******************* Update a post *******************/
@@ -81,15 +80,13 @@ export const usePostsStore = defineStore("postsStore", {
       }
     },
     /******************* Proxy *******************/
-    async searchData() {
-      const res = await fetch('/api/proxy/search', {
+    async searchData(dateIni, dateFin) {
+      const res = await fetch(`/api/proxy/search?DATEINI=${encodeURIComponent(dateIni)}&DATAFIN=${encodeURIComponent(dateFin)}`, {
         method: 'get',
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      console.log(res);
 
       const data = await res.json();
       return data;
