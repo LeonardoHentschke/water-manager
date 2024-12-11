@@ -18,6 +18,8 @@ let heatmapLayer;
 
 const showHeatMap = ref(false);
 
+const emit = defineEmits(["marker-added"]);
+
 const createMarker = (lat, lng, popupText) => {
   const marker = leaflet
     .marker([lat, lng])
@@ -32,6 +34,7 @@ const createMarker = (lat, lng, popupText) => {
   });
 
   markersLayer.push(marker);
+  emit("marker-added", { latitude: lat, longitude: lng });
 };
 
 const toggleHeatMap = () => {

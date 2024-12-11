@@ -37,4 +37,23 @@ class ProxyWaterManagerController extends Controller {
         }
     }
 
+    public function insertData(Request $request) {
+        try {
+
+
+            $request->validate([
+                'productID' => 'required',
+                'date' => 'required',
+                'value' => 'required',
+            ]);
+
+
+            $url = 'http://177.44.248.13:8080/WaterManager/?op=INSERT&FORMAT=JSON';
+            return Http::post($url, $request->all());
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro inesperado', 'message' => $e->getMessage()], 500);
+        }
+    }
+
 }

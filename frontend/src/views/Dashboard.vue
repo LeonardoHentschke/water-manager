@@ -20,6 +20,8 @@ const authStore = useAuthStore();
 const postsStore = usePostsStore();
 const projectIds = ref([]);
 const mapData = ref([]);
+const latitude = ref("");
+const longitude = ref("");
 
 const fetchData = async () => {
   try {
@@ -30,6 +32,11 @@ const fetchData = async () => {
   }
 };
 
+const handleMarkerAdded = (coords) => {
+  latitude.value = coords.latitude;
+  longitude.value = coords.longitude;
+};
+
 onMounted(async () => {
   try {
     fetchData();
@@ -38,6 +45,22 @@ onMounted(async () => {
     console.error("Erro ao montar a página:", error);
   }
 });
+
+const handleSubmit = async (event) => {
+  try {
+    await postsStore.createPost({
+      title: event.target.title.value,
+      description: event.target.description.value,
+      productid: event.target.model.value,
+      value: event.target.value.value,
+      latitude: event.target.latitude.value,
+      longitude: event.target.longitude.value,
+    });
+    fetchData();
+  } catch (error) {
+    console.error("Erro ao criar o post:", error);
+  }
+};
 
 </script>
 
@@ -204,7 +227,7 @@ onMounted(async () => {
       </header>
       <main class="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
         <div class="relative hidden flex-col items-start gap-8 md:flex">
-          <form class="grid w-full items-start gap-6">
+          <form class="grid w-full items-start gap-6" @submit.prevent="handleSubmit">
             <fieldset class="grid gap-6 rounded-lg border p-4">
               <legend class="-ml-1 px-1 text-sm font-medium">
                 Nova informação
@@ -261,14 +284,14 @@ onMounted(async () => {
               </div>
               <div class="grid gap-3">
                 <Label for="latitude" class="text-left">Latitude</Label>
-                <Input id="latitude"/>
+                <Input id="latitude" v-model="latitude" readonly />
               </div>
               <div class="grid gap-3">
                 <Label for="longitude" class="text-left">Longitude</Label>
-                <Input id="longitude"/>
+                <Input id="longitude" v-model="longitude" readonly />
               </div>
             </fieldset>
-            <Button>
+            <Button type="submit">
               Salvar
             </Button>
           </form>
@@ -281,7 +304,7 @@ onMounted(async () => {
             </Badge>
           </div>
           <div id="map-container" class="relative z-0">
-            <LeafletMap :markers="mapData"/>
+            <LeafletMap :markers="mapData" @marker-added="handleMarkerAdded" />
           </div>
         </div>
       </main>

@@ -31,10 +31,14 @@ class PostController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        $fields = $request->validate([
-            'title' => 'required|max:255',
-            'body' => 'required'
-        ]);
+        try {
+            $fields = $request->validateWithBag('post', [
+                'title' => 'required|max:255',
+                'body' => 'required'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao validar os campos', 'message' => $e->getMessage()], 400);
+        }
 
         $post = $request->user()->posts()->create($fields);
 
