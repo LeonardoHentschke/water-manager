@@ -19,6 +19,13 @@ const markerLayer = ref(null);
 const mapData = ref([]);
 const isHeatmapMode = ref(false);
 
+const dateIni = ref("2024-10-01");
+const dateFin = ref(new Date().toISOString().slice(0, 10));
+
+const formatDateTimeForAPI = (date) => {
+  return `${date}T00:00:00`;
+};
+
 const initializeMap = () => {
   map.value = L.map("map").setView([-29.4661, -51.9614], 12);
 
@@ -58,18 +65,24 @@ const toggleMapMode = () => {
   }
 };
 
-onMounted(async () => {
-  initializeMap();
+const fetchMapData = async () => {
   try {
-    mapData.value = await postsStore.searchData();
+    const formattedDateIni = formatDateTimeForAPI(dateIni.value);
+    const formattedDateFin = formatDateTimeForAPI(dateFin.value);
+    const data = await postsStore.searchData(formattedDateIni, formattedDateFin);
+    mapData.value = data;
     updateHeatmap();
     updateMarkers();
-
-    // Set default mode to show only markers on first load
-    map.value.addLayer(markerLayer.value);
   } catch (error) {
     console.error("Erro ao buscar dados para o mapa:", error);
   }
+};
+
+onMounted(() => {
+  initializeMap();
+  fetchMapData();
+
+  map.value.addLayer(markerLayer.value);
 });
 </script>
 
@@ -128,6 +141,23 @@ onMounted(async () => {
         <Button size="sm" class="ml-auto gap-1.5 text-sm" @click="toggleMapMode">
           {{ isHeatmapMode ? "Mostrar Marcadores" : "Mapa de calor" }}
         </Button>
+
+        <Label for="dateIni">Inicio:</Label>
+        <input
+          id="dateIni"
+          type="date"
+          v-model="dateIni"
+          class="border p-2 rounded"
+        />
+        <Label for="dateFin">Fim:</Label>
+        <input
+          id="dateFin"
+          type="date"
+          v-model="dateFin"
+          class="border p-2 rounded"
+        />
+        <Button @click="fetchMapData">Search</Button>
+
         <Button variant="outline" size="sm" class="ml-auto gap-1.5 text-sm" disabled>
           <Share class="size-3.5" /> Compartilhar
         </Button>

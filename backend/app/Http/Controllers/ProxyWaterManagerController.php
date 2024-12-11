@@ -28,11 +28,11 @@ class ProxyWaterManagerController extends Controller {
 
     public function searchData(Request $request) {
         try {
-            // $dateIni = $request->query('DATEINI', now()->startOfDay()->toDateTimeString());
-            // $dateFin = $request->query('DATAFIN', now()->endOfDay()->toDateTimeString());
-            // $url = "http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI={$dateIni}&DATAFIN={$dateFin}&FORMAT=JSON";
+            $dateIni = $request->query('DATEINI', now()->startOfDay()->toDateTimeString());
+            $dateFin = $request->query('DATAFIN', now()->endOfDay()->toDateTimeString());
+            $url = "http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI={$dateIni}&DATAFIN={$dateFin}&FORMAT=JSON";
 
-            $url = 'http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI=2024-10-01%2000:00:00&DATAFIN=2024-10-02%2024:00:00&FORMAT=JSON';
+            // $url = 'http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI=2024-10-01%2000:00:00&DATAFIN=2024-10-02%2024:00:00&FORMAT=JSON';
 
             return Http::get($url);
     
