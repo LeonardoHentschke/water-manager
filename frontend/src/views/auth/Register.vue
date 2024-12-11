@@ -14,6 +14,7 @@ const { authenticate } = authStore;
 const formData = reactive({
   name: "",
   email: "",
+  vendor_id: "",
   password: "",
   password_confirmation: "",
 });
@@ -22,7 +23,6 @@ onMounted(() => (errors.value = {}));
 
 const handleRegister = async () => {
   try {
-    console.log("formData", formData);
     await authenticate('register', formData);
   } catch (err) {
     console.error("Erro no registro:", err);
@@ -54,6 +54,18 @@ const handleRegister = async () => {
               required
             />
             <p v-if="errors.name" class="text-red-500 text-xs">{{ errors.name[0] }}</p>
+          </div>
+          <div class="grid gap-2">
+            <div class="flex items-center">
+              <Label class="text-primary" for="vendorid">Vendor ID</Label>
+            </div>
+            <Input
+              id="vendorid"
+              v-model="formData.vendor_id"
+              placeholder="Seu vendor ID"
+              required
+            />
+            <p v-if="errors.name" class="text-red-500 text-xs">{{ errors.vendor_id[0] }}</p>
           </div>
           <div class="grid gap-2">
             <div class="flex items-center">
