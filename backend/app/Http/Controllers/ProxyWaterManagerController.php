@@ -28,14 +28,18 @@ class ProxyWaterManagerController extends Controller {
 
     public function searchData(Request $request) {
         try {
-            $dateIni = $request->query('DATEINI', now()->startOfDay()->toDateTimeString());
-            $dateFin = $request->query('DATAFIN', now()->endOfDay()->toDateTimeString());
-            $url = "http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI={$dateIni}&DATAFIN={$dateFin}&FORMAT=JSON";
-
-            // $url = 'http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI=2024-10-01%2000:00:00&DATAFIN=2024-10-02%2024:00:00&FORMAT=JSON';
+            // Captura as datas dos parâmetros ou usa o padrão (início e fim do dia atual)
+            $dateIni = $request->query('DATEINI', now()->startOfDay()->format('Y-m-d H:i:s'));
+            $dateFin = $request->query('DATAFIN', now()->endOfDay()->format('Y-m-d H:i:s'));
+    
+            // Formata o URL com as datas
+            $url = "http://177.44.248.13:8080/WaterManager/?op=SELECT&DATEINI=" 
+                 . urlencode($dateIni) 
+                 . "&DATAFIN=" 
+                 . urlencode($dateFin) 
+                 . "&FORMAT=JSON";
 
             return Http::get($url);
-    
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erro inesperado', 'message' => $e->getMessage()], 500);
         }
