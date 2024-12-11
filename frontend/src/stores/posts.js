@@ -24,7 +24,6 @@ export const usePostsStore = defineStore("postsStore", {
     },
     /******************* Create a post *******************/
     async createPost(formData) {
-      console.log(formData);
       const res = await fetch("/api/posts", {
         method: "post",
         headers: {
@@ -38,7 +37,7 @@ export const usePostsStore = defineStore("postsStore", {
       if (data.errors) {
         this.errors = data.errors;
       } else {
-        this.router.push({ name: "home" });
+        // this.router.push({ name: "home" });
         this.errors = {}
       }
     },

@@ -33,8 +33,14 @@ class PostController extends Controller implements HasMiddleware
     {
         try {
             $fields = $request->validateWithBag('post', [
-                'title' => 'required|max:255',
-                'body' => 'required'
+                'user_id' => 'required|exists:users,id',
+                'title' => 'max:255',
+                'description' => 'nullable',
+                'value' => 'nullable',
+                'vendor_id' => 'nullable',
+                'product_id' => 'nullable',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erro ao validar os campos', 'message' => $e->getMessage()], 400);

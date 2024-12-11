@@ -20,6 +20,7 @@ const authStore = useAuthStore();
 const postsStore = usePostsStore();
 const projectIds = ref([]);
 const mapData = ref([]);
+const selectedProductId = ref("");
 const latitude = ref("");
 const longitude = ref("");
 
@@ -49,12 +50,14 @@ onMounted(async () => {
 const handleSubmit = async (event) => {
   try {
     await postsStore.createPost({
+      user_id: authStore.user.id,
       title: event.target.title.value,
       description: event.target.description.value,
-      productid: event.target.model.value,
       value: event.target.value.value,
-      latitude: event.target.latitude.value,
-      longitude: event.target.longitude.value,
+      vendor_id: authStore.user.id,
+      product_id: selectedProductId.value,
+      latitude: latitude.value,
+      longitude: longitude.value,
     });
     fetchData();
   } catch (error) {
@@ -165,7 +168,7 @@ const handleSubmit = async (event) => {
                 </legend>
                 <div class="grid gap-3">
                   <Label for="model">Project ID</Label>
-                  <Select>
+                  <Select v-model="selectedProductId">
                     <SelectTrigger
                       id="model"
                       class="items-start [&_[data-description]]:hidden"
@@ -247,7 +250,7 @@ const handleSubmit = async (event) => {
               </legend>
               <div class="grid gap-3">
                 <Label for="model" class="text-left">Project ID</Label>
-                <Select>
+                <Select v-model="selectedProductId">
                   <SelectTrigger
                     id="model"
                     class="items-start [&_[data-description]]:hidden"
